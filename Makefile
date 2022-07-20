@@ -55,4 +55,4 @@ build-static-go:
 build: build-proto build-webui build-go
 
 start: build
-	$(GO) run main.go
+	./${COMPONENT}

@@ -6,21 +6,15 @@
   import { Col, Label, FormGroup, Input, Button } from 'sveltestrap';
 
   let cats = [];
-  let lastKind = IndexRequestKind.CITY;
+  let lastKind = 0;
   let autoChangeKind = false;
   let cli = new CategoryServiceClient(window.location.protocol + '//' + window.location.host);
 
   const getCategories = async () => {
       let indexReq = new IndexRequest()
       indexReq.setKind(lastKind)
-      console.log(`Kind Set to: ${lastKind} , is auto change enabled: ${autoChangeKind}`)
       if (autoChangeKind) {
         lastKind = (lastKind + 1) % Object.keys(IndexRequestKind).length
-        // if (lastKind == IndexRequestKind.CITY) {
-        //   lastKind = IndexRequestKind.COUNTRY
-        // } else {
-        //   lastKind = IndexRequestKind.CITY
-        // }
       }
       cli.index(indexReq, (err, res) => {
           if (err === null) {
@@ -42,7 +36,7 @@
 </Col>
 
 <Col>
-<button on:click={getCategories}>Get random cities/countries (RPC Service Client)</button>
+<button on:click={getCategories}>Get random collection of a category (RPC Service Client)</button>
 
 <ul>
   {#each cats.slice(0,5) as cat}

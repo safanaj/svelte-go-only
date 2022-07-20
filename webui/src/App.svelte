@@ -1,8 +1,10 @@
 <script>
   import viteLogo from './assets/vite.svg'
   import svelteLogo from './assets/svelte.svg'
-  import Counter from './lib/Counter.svelte'
-  // import Category from './lib/Category.svelte'
+  import ginLogo from './assets/gin-gonic.svg'
+  import grpcLogo from './assets/grpc.svg'
+  // import Counter from './lib/Counter.svelte'
+  import Category from './lib/Category.svelte'
 
   import { Container, Col, Row, Input, InputGroup } from 'sveltestrap';
 </script>
@@ -17,39 +19,37 @@
         <a href="https://svelte.dev" target="_blank">
           <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
         </a>
+        <a href="https://gin-gonic.com" target="_blank">
+          <img src={ginLogo} class="logo gin-gonic" alt="Gin Gonic Logo" />
+        </a>
+        <a href="https://grpc.io" target="_blank">
+          <img src={grpcLogo} class="logo grpc" alt="gRPC Logo" />
+        </a>
       </div>
+
       <h1>Vite + Svelte by Go Gin + GRPC-Web</h1>
     </Row>
 
-    <Row>
-
-      <!-- <Col xs="4"> -->
-      <!--   <div class="card"> -->
-      <!--     <Counter /> -->
-      <!--   </div> -->
-      <!-- </Col> -->
-
-      <!-- <Col pull="right"> -->
-      <!--   <div class="card"> -->
-      <!--     <Counter /> -->
-      <!--   </div> -->
-      <!-- </Col> -->
-
-    </Row>
-
     <!-- <Row> -->
-    <!--   <div class="card"> -->
-    <!--     <Category /> -->
-    <!--   </div> -->
+
+    <!--   <Col xs="4"> -->
+    <!--     <div class="card"> -->
+    <!--       <Counter /> -->
+    <!--     </div> -->
+    <!--   </Col> -->
+
+    <!--   <Col pull="right"> -->
+    <!--     <div class="card"> -->
+    <!--       <Counter /> -->
+    <!--     </div> -->
+    <!--   </Col> -->
+
     <!-- </Row> -->
 
     <Row>
-      <Col xs="1" style="float; backgroud-color: blue;">SB</Col>
-      <Col>
-      <Row>1</Row>
-      <Row>2</Row>
-      <Row>3</Row>
-     </Col>
+      <div class="card">
+        <Category />
+      </div>
     </Row>
 
 
