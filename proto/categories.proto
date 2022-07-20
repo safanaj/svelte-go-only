@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "svelte-go-only/pb";
+
+service CategoryService {
+  rpc Index(IndexRequest) returns (Categories) {}
+}
+
+message Categories {
+  repeated Category categories = 1;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+}
+
+message IndexRequest {
+  enum Kind {
+    CITY = 0;
+    COUNTRY = 1;
+    ADJECTIVE = 2;
+    EMAIL = 3;
+    CURRENCY = 4;
+  }
+  Kind kind = 1;
+}
