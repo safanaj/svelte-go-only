@@ -14,6 +14,7 @@ if __name__ == '__main__':
             exports.append(l)
         if l.startswith("goog.object.extend(exports, "):
             parent_pkg = re.match(r'^goog.object.extend\(exports, (.*)\);$', l).group(1)
+            data[i] = ""
 
     for ex in exports:
         m = re.match(f"^goog.exportSymbol\('({parent_pkg}\.(.*))', .*$", ex)

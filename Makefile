@@ -14,7 +14,7 @@ golang:
 
 clean:
 	rm -f main $(COMPONENT)
-	rm -rf webui/dist pb webui/pb
+	rm -rf webui/dist webui/build pb webui/pb
 
 clean-all: clean
 	rm -rf webui/node_modules vendor

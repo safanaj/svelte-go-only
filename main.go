@@ -77,26 +77,38 @@ func (h *rootHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	h.ginHandler.ServeHTTP(w, req)
 }
 
-//go:embed webui/dist
+//go:embed all:webui/build
 var distFS embed.FS
-var assetsFS fs.FS
-var templatesFS fs.FS
 
-const distFSPrefix = "webui/dist"
+// //go:embed webui/build/_app
+// var appFS embed.FS
+var appFS fs.FS
+var assetsFS fs.FS
+
+// var templatesFS fs.FS
+
+const distFSPrefix = "webui/build"
+const appFSPrefix = "webui/build/_app"
+const assetsFSPrefix = "immutable/assets"
 
 var shutdownSignals = []os.Signal{os.Interrupt, syscall.SIGTERM}
 
 func main() {
 	var err error
 
-	assetsFS, err = fs.Sub(distFS, path.Join(distFSPrefix, "assets"))
+	appFS, err = fs.Sub(distFS, path.Join(distFSPrefix, "_app"))
 	if err != nil {
 		panic(err)
 	}
-	templatesFS, err = fs.Sub(distFS, path.Join(distFSPrefix, "templates"))
+
+	assetsFS, err = fs.Sub(appFS, assetsFSPrefix)
 	if err != nil {
 		panic(err)
 	}
+	// templatesFS, err = fs.Sub(distFS, path.Join(distFSPrefix, "templates"))
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	grpcServer := grpc.NewServer()
 	wrappedServer := grpcweb.WrapServer(grpcServer)
@@ -115,7 +127,8 @@ func main() {
 	}
 
 	// router.StaticFileFS("/icon", path.Join(distFSPrefix, "vite.svg"), http.FS(distFS))
-	iconFileNames, err := assetsFS.(fs.GlobFS).Glob("vite.*.svg")
+	// iconFileNames, err := assetsFS.(fs.GlobFS).Glob("vite.*.svg")
+	iconFileNames, err := assetsFS.(fs.GlobFS).Glob("vite-*.svg")
 	if err != nil {
 		panic(err)
 	}
@@ -123,16 +136,26 @@ func main() {
 		panic(fmt.Errorf("icon not found"))
 	}
 
-	router.StaticFS("/assets", http.FS(assetsFS))
+	// router.StaticFS("/assets", http.FS(assetsFS))
+	router.StaticFS("/_app", http.FS(appFS))
 
 	serveIndex := func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"title": "Svelte+ViteJS by Gin+GRPC-Web",
-			"icon":  path.Join("assets", iconFileNames[0]),
+			"icon":  path.Join("/_app/immutable/assets", iconFileNames[0]),
 		})
 	}
+	serveAbout := func(c *gin.Context) {
+		c.HTML(http.StatusOK, "about.html", gin.H{
+			"title": "About - Svelte+ViteJS by Gin+GRPC-Web",
+			"icon":  path.Join("/_app/immutable/assets", iconFileNames[0]),
+		})
+	}
+
 	router.GET("/", serveIndex)
 	router.HEAD("/", serveIndex)
+	router.GET("/about", serveAbout)
+	router.HEAD("/about", serveAbout)
 
 	// Listen and serve on 0.0.0.0:8080
 	// router.Run(":8080")
