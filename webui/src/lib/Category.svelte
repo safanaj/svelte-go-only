@@ -8,11 +8,14 @@
   let cats = [];
   let lastKind = 0;
   let autoChangeKind = false;
+  let serverSide = 1000
+  let clientSide = 5
   let cli = new CategoryServiceClient(window.location.protocol + '//' + window.location.host);
 
   const getCategories = async () => {
       let indexReq = new IndexRequest()
       indexReq.setKind(lastKind)
+      indexReq.setNumber(serverSide)
       if (autoChangeKind) {
         lastKind = (lastKind + 1) % Object.keys(IndexRequestKind).length
       }
@@ -22,11 +25,21 @@
           } else { console.log(err) }
       })
   }
-
 </script>
 
 <Col>
-<Label><p>Categories kind <Input inline type="switch" label="(auto change)" bind:checked={autoChangeKind} /></p>
+  <Label><p>Categories kind <Input inline type="switch" label="(auto change)" bind:checked={autoChangeKind} /></p>
+    <Col>
+      <label for="serverSide" class="form-label">Number of entries from server-side</label>
+      <input type="range" class="form-range" id="serverSide" min="1" max="1000000" bind:value={serverSide} />
+      <span> {serverSide}</span>
+    </Col>
+    <Col>
+      <label for="serverSide" class="form-label">Number of entries on client-side</label>
+      <input type="range" class="form-range" id="clientSide" min="1" max="1000" bind:value={clientSide} />
+      <span> {clientSide}</span>
+    </Col>
+
   <FormGroup>
     {#each Object.entries(IndexRequestKind) as e}
       <Input type="radio" value={e[1]} label="{e[0].capitalize()}" bind:group={lastKind} />
@@ -39,7 +52,7 @@
 <button on:click={getCategories}>Get random collection of a category (RPC Service Client)</button>
 
 <ul>
-  {#each cats.slice(0,5) as cat}
+  {#each cats.slice(0, clientSide) as cat}
 	<li>
 	  {cat.id} - {cat.name}
 	</li>
