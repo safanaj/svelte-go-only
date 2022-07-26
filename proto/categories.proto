@@ -25,4 +25,5 @@ message IndexRequest {
     CURRENCY = 4;
   }
   Kind kind = 1;
+  int32 number = 2;
 }

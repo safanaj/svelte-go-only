@@ -7,6 +7,7 @@ GO ?= go
 LDFLAGS ?= -s -w
 
 SRCS = ./main.go
+PROTO_SRCS = proto/*.proto
 
 golang:
 	@echo "--> Go Version"
@@ -21,7 +22,14 @@ clean-all: clean
 
 go-deps:
 	mkdir -p $(CURDIR)/pb && echo "package pb" > $(CURDIR)/pb/doc.go
-	$(GO) mod tidy -v && $(GO) mod vendor -v && $(GO) mod verify
+	$(GO) mod tidy -v && $(GO) mod vendor -v
+
+go-deps-verify: go-deps
+	$(GO) mod verify
+
+proto/.built: $(PROTO_SRCS)
+	$(MAKE) build-proto
+	touch $@
 
 build-proto:
 	mkdir -p $(CURDIR)/pb $(CURDIR)/webui/pb
@@ -36,23 +44,31 @@ build-proto:
 webui/node_modules:
 	cd webui ; yarn install
 
-build-webui: build-proto webui/node_modules
+build-webui: webui/node_modules proto/.built
 	cd webui ; yarn build
 
-build-go:
+webui/build: proto/.built
+	$(MAKE) build-webui
+	touch $@
+
+vendor:
+	$(MAKE) go-deps
+	touch $@
+
+build-go: vendor webui/build proto/.built
 	$(ENVVAR) GOOS=$(GOOS) $(GO) build -mod=vendor \
 		-gcflags "-e" \
 		-ldflags "$(LDFLAGS) -X main.version=${VERSION} -X main.progname=${COMPONENT}" \
 		-v -o ${COMPONENT} $(SRCS)
 
-build-static-go:
+build-static-go: vendor webui/build proto/.built
 	@echo "--> Compiling the static binary"
 	$(ENVVAR) GOARCH=amd64 GOOS=$(GOOS) $(GO) build -mod=vendor -a -tags netgo \
 		-gcflags "-e" \
 		-ldflags "$(LDFLAGS) -X main.version=${VERSION} -X main.progname=${COMPONENT}" \
 		-v -o ${COMPONENT} $(SRCS)
 
-build: build-proto build-webui build-go
+build: build-go
 
 start: build
 	./${COMPONENT}

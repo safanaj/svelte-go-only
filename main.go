@@ -37,7 +37,7 @@ func (_ *CategoryServer) Index(
 		Categories: []*pb.Category{},
 	}
 
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < int(in.Number); i++ {
 		category := &pb.Category{
 			Id: fmt.Sprintf("%v", i),
 		}
