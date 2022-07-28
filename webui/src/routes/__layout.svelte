@@ -1,15 +1,12 @@
 <script>
 	import Header from '$lib/header/Header.svelte';
 	import '../app.scss';
-  import { Container } from 'sveltestrap';
 </script>
 
 <Header />
 
 <main>
-  <Container fluid>
 	<slot />
-  </Container>
 </main>
 
 <footer>
@@ -18,9 +15,6 @@
 
 <style>
 	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
 		padding: 1rem;
 		width: 100%;
 		max-width: 1024px;
@@ -29,8 +23,6 @@
 	}
 
 	footer {
-		display: flex;
-		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		padding: 40px;

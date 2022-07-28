@@ -27,7 +27,7 @@
   }
 </script>
 
-<Col>
+<Col class="jcc">
   <Label><p>Categories kind <Input inline type="switch" label="(auto change)" bind:checked={autoChangeKind} /></p>
     <Col>
       <label for="serverSide" class="form-label">Number of entries from server-side</label>

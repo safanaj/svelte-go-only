@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "svelte-go-only/pb";
+
+service ControlMsgService {
+  rpc Control(stream ControlMsgEmpty) returns (stream ControlMsg) {}
+  rpc Refresh(ControlMsgEmpty) returns (ControlMsgEmpty) {}
+}
+
+message ControlMsg {
+  string date = 1;
+  string cpu_usage = 2;
+  string mem_usage = 3;
+}
+
+message ControlMsgEmpty {
+}
