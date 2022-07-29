@@ -9,8 +9,18 @@
 	<slot />
 </main>
 
-<footer>
-	<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+<footer class="footer">
+  <div class="level">
+    <div class="level-left">
+	  <p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+    </div>
+
+    <div class="level-right">
+      <p>Click on the logos to learn more</p>
+    </div>
+  </div>
+
+
 </footer>
 
 <style>

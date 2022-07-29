@@ -19,7 +19,7 @@
 	<meta name="description" content="About this app" />
 </svelte:head>
 
-<section>
+<section class="section">
 	<h1>About this app</h1>
 
 	<p>

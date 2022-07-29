@@ -30,7 +30,10 @@
   })
 
 </script>
+
 {#if $date != ""}
-  <p>Streaming from server .... {$date} -- cpu: {$cpuUsage} | mem: {$memUsage}</p>
+  <div class="block">
+    <p>Streaming from server .... {$date} -- cpu: {$cpuUsage} | mem: {$memUsage}</p>
+  </div>
 {/if}
-<button on:click={doRefresh}>Refresh</button>
+<button class="button" on:click={doRefresh}>Refresh</button>

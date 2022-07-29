@@ -24,7 +24,8 @@ const config = {
 		additionalData: '@use "src/variables.scss" as *;'
 	  }
 	}
-  }
+  },
+  server: {fs: {strict: false}}
 };
 
 export default config;

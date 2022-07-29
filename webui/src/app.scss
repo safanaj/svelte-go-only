@@ -1,68 +1,12 @@
 /* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */ /* Import only what you need from Bootstrap */
-
-@import "bootstrap/scss/root";
-
-@import "bootstrap/scss/reboot";
-
-@import "bootstrap/scss/type";
-
-@import "bootstrap/scss/accordion";
-
-@import "bootstrap/scss/alert";
-
-@import "bootstrap/scss/badge";
-
-@import "bootstrap/scss/breadcrumb";
-
-@import "bootstrap/scss/buttons";
-
-@import "bootstrap/scss/button-group";
-
-@import "bootstrap/scss/card";
-
-@import "bootstrap/scss/carousel";
-
-@import "bootstrap/scss/close";
-
-@import "bootstrap/scss/containers";
-
-@import "bootstrap/scss/dropdown";
-
-@import "bootstrap/scss/forms";
-
-@import "bootstrap/scss/grid";
-
-@import "bootstrap/scss/images";
-
-@import "bootstrap/scss/list-group";
-
-@import "bootstrap/scss/modal";
-
-@import "bootstrap/scss/nav";
-
-@import "bootstrap/scss/navbar";
-
-@import "bootstrap/scss/offcanvas";
-
-@import "bootstrap/scss/pagination";
-
-@import "bootstrap/scss/popover";
-
-@import "bootstrap/scss/progress";
-
-@import "bootstrap/scss/spinners";
-
-@import "bootstrap/scss/tables";
-
-@import "bootstrap/scss/toasts";
-
-@import "bootstrap/scss/tooltip";
-
-@import "bootstrap/scss/helpers";
-
-@import "bootstrap/scss/utilities";
-
-@import "bootstrap/scss/utilities/api";
+@import "bulma/sass/utilities/_all";
+@import "bulma/sass/base/_all";
+@import "bulma/sass/elements/_all";
+@import "bulma/sass/form/_all";
+@import "bulma/sass/components/_all";
+@import "bulma/sass/grid/_all";
+@import "bulma/sass/helpers/_all";
+@import "bulma/sass/layout/_all";
 
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -72,7 +16,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  // background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -147,6 +91,6 @@ button:focus-visible {
   }
 }
 
-.jcc {
-    justify-content: center;
-}
+// .jcc {
+//     justify-content: center;
+// }
