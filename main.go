@@ -38,23 +38,24 @@ type ControlMsgServer struct {
 	uuid2stream map[string]pb.ControlMsgService_ControlServer
 }
 
+func sendControlMsg(stream pb.ControlMsgService_ControlServer, t time.Time) error {
+	la, _ := procFS.LoadAvg()
+	mi, _ := procFS.Meminfo()
+	mu := "unknown"
+	if mi.MemTotal != nil && mi.MemAvailable != nil {
+		mu = fmt.Sprintf("%d", (*mi.MemTotal)-(*mi.MemAvailable))
+	}
+	cmsg := &pb.ControlMsg{
+		Date:     t.Format(time.RFC850),
+		CpuUsage: fmt.Sprintf("%g", la.Load1),
+		MemUsage: mu,
+	}
+	return stream.Send(cmsg)
+}
+
 func (s *ControlMsgServer) startRefresher(ctx context.Context) {
 	s.refreshCh = make(chan string)
 	s.uuid2stream = make(map[string]pb.ControlMsgService_ControlServer)
-	sendControlMsg := func(stream pb.ControlMsgService_ControlServer, t time.Time) error {
-		la, _ := procFS.LoadAvg()
-		mi, _ := procFS.Meminfo()
-		mu := "unknown"
-		if mi.MemTotal != nil && mi.MemAvailable != nil {
-			mu = fmt.Sprintf("%d", (*mi.MemTotal)-(*mi.MemAvailable))
-		}
-		cmsg := &pb.ControlMsg{
-			Date:     t.Format(time.RFC850),
-			CpuUsage: fmt.Sprintf("%g", la.Load1),
-			MemUsage: mu,
-		}
-		return stream.Send(cmsg)
-	}
 
 	ticker := time.NewTicker(10 * time.Second)
 
@@ -96,6 +97,7 @@ func (s *ControlMsgServer) Refresh(
 }
 
 func (s *ControlMsgServer) Control(stream pb.ControlMsgService_ControlServer) error {
+	sendControlMsg(stream, time.Now())
 	ruuid, isOk := stream.Context().Value(idCtxKey).(string)
 	if isOk {
 		// fmt.Printf("UUID: %s\n", ruuid)
@@ -107,6 +109,7 @@ func (s *ControlMsgServer) Control(stream pb.ControlMsgService_ControlServer) er
 	case <-stream.Context().Done():
 		return nil
 	}
+	return nil
 }
 
 type CategoryServer struct {
@@ -161,8 +164,6 @@ func (h *rootHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	connection := req.Header.Get("Connection")
 	upgrade := req.Header.Get("Upgrade")
 	wsProtocol := req.Header.Get("Sec-Websocket-Protocol")
-
-	var ruuid string
 	cookie, err := req.Cookie(idKey)
 	if err == http.ErrNoCookie {
 		cookie = &http.Cookie{Name: idKey, Value: fmt.Sprintf("%s", uuid.New())}
@@ -245,7 +246,7 @@ func main() {
 
 	router.StaticFS("/_app", http.FS(appFS))
 
-	serveHTML := func(page string) func(*gin.Context) {
+	servePage := func(page string) func(*gin.Context) {
 		return func(c *gin.Context) {
 			c.HTML(http.StatusOK, page, gin.H{
 				"title": "Svelte+ViteJS by Gin+GRPC-Web",
@@ -254,10 +255,10 @@ func main() {
 		}
 	}
 
-	router.GET("/", serveHTML("index.html"))
-	router.HEAD("/", serveHTML("index.html"))
-	router.GET("/about", serveHTML("about.html"))
-	router.HEAD("/about", serveHTML("about.html"))
+	router.GET("/", servePage("index.html"))
+	router.HEAD("/", servePage("index.html"))
+	router.GET("/about", servePage("about.html"))
+	router.HEAD("/about", servePage("about.html"))
 
 	c := make(chan os.Signal, 2)
 	signal.Notify(c, shutdownSignals...)
