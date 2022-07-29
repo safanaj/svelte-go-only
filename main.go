@@ -161,7 +161,7 @@ var idCtxKey = &ctxKey{name: "id"}
 
 func (h *rootHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	contentType := req.Header.Get("Content-Type")
-	connection := req.Header.Get("Connection")
+	// connection := req.Header.Get("Connection")
 	upgrade := req.Header.Get("Upgrade")
 	wsProtocol := req.Header.Get("Sec-Websocket-Protocol")
 	cookie, err := req.Cookie(idKey)
@@ -173,7 +173,7 @@ func (h *rootHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if h.grpcwebHandler.IsGrpcWebRequest(req) ||
 		h.grpcwebHandler.IsAcceptableGrpcCorsRequest(req) ||
 		contentType == "application/grpc-web+proto" ||
-		(connection == "Upgrade" && upgrade == "websocket" && wsProtocol == "grpc-websockets") {
+		(upgrade == "websocket" && wsProtocol == "grpc-websockets") {
 		log.Printf("A content for GRPC-Web: %s %s %s", req.Proto, req.Method, req.URL.Path)
 		h.grpcwebHandler.ServeHTTP(w, req.WithContext(rctx))
 		return
