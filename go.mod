@@ -9,6 +9,8 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/prometheus/procfs v0.3.0
+	github.com/spf13/pflag v1.0.5
+	github.com/webview/webview v0.0.0-20220816141928-2ee04ccd0530
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.0
 )

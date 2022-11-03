@@ -6,15 +6,15 @@ const config = {
   kit: {
     adapter: adapter(),
     outDir: 'dist',
-    prerender: {
-      crawl: false,
-      default: true
-    },
+    // prerender: {
+    //   crawl: false,
+    //   default: true
+    // },
 
-    // Override http methods in the Todo forms
-    methodOverride: {
-      allowed: ['PATCH', 'DELETE']
-    }
+    // // Override http methods in the Todo forms
+    // methodOverride: {
+    //   allowed: ['PATCH', 'DELETE']
+    // }
   },
   preprocess: [
     preprocess({

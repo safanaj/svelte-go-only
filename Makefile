@@ -1,7 +1,7 @@
 VERSION ?= 0.1.0
 COMPONENT = svelte-go-only
 FLAGS =
-ENVVAR = CGO_ENABLED=0
+ENVVAR = CGO_ENABLED=1
 GOOS ?= $(shell go env GOOS) #linux
 GO ?= go
 LDFLAGS ?= -s -w
@@ -72,3 +72,6 @@ build: build-go
 
 start: build
 	./${COMPONENT}
+
+start-app: build
+	./${COMPONENT} --as-app

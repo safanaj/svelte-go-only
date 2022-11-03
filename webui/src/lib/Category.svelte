@@ -28,7 +28,15 @@
 
 
 <div class="block">
-  <p>Automatically change categories kind <input type="checkbox" bind:checked={autoChangeKind} /></p>
+  <!-- <p>Automatically change categories kind <input type="checkbox" bind:checked={autoChangeKind} /></p> -->
+  <!-- <label class="checkbox"> -->
+  <!--   Automatically change categories kind -->
+  <!--   <input class="switch" type="checkbox" bind:checked={autoChangeKind} > -->
+  <!-- </label> -->
+  <div class="field">
+    <input id="autoChangeSwitch" type="checkbox" class="switch is-rtl is-info is-rounded" bind:checked={autoChangeKind} />
+    <label for="autoChangeSwitch">Automatically change categories kind</label>
+  </div>
 </div>
 <div class="columns">
   <div class="column">

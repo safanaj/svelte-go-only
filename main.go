@@ -1,3 +1,6 @@
+//go:build cgo || linux
+// +build cgo linux
+
 package main
 
 import (
@@ -7,12 +10,15 @@ import (
 	"html/template"
 	"io/fs"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"path"
 	"syscall"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
@@ -24,7 +30,7 @@ import (
 	"github.com/prometheus/procfs"
 
 	"github.com/safanaj/svelte-go-only/pb"
-	// "github.com/webview/webview"
+	"github.com/webview/webview"
 )
 
 var version, progname string
@@ -198,6 +204,9 @@ const assetsFSPrefix = "immutable/assets"
 var shutdownSignals = []os.Signal{os.Interrupt, syscall.SIGTERM}
 
 func main() {
+	asApp := flag.Bool("as-app", false, "run on web view")
+	flag.Parse()
+
 	var err error
 
 	procFS, err = procfs.NewDefaultFS()
@@ -269,15 +278,39 @@ func main() {
 		os.Exit(1) // second signal. Exit directly.
 	}()
 
-	srv := &http.Server{Addr: ":8080", Handler: &rootHandler{ginHandler: router, grpcwebHandler: wrappedServer}}
-	go srv.ListenAndServe()
+	var l net.Listener
+	var listenOnAddr string
+	var wv webview.WebView
+	if *asApp {
+		l, _ = net.Listen("tcp", "localhost:0")
+		listenOnAddr = fmt.Sprintf("localhost:%d", l.Addr().(*net.TCPAddr).Port)
+
+		wv = webview.New(true)
+		wv.SetTitle("Svelte Go Only")
+		wv.SetSize(1000, 800, webview.HintNone)
+		wv.Navigate(fmt.Sprintf("http://%s", listenOnAddr))
+	} else {
+		listenOnAddr = ":8080"
+		l, _ = net.Listen("tcp", listenOnAddr)
+	}
+	srv := &http.Server{Handler: &rootHandler{ginHandler: router, grpcwebHandler: wrappedServer}}
+	// go srv.ListenAndServe()
+	go srv.Serve(l)
 
 	go func() {
 		<-ctx.Done()
+		if *asApp {
+			wv.Destroy()
+		}
 		srv.Shutdown(context.Background())
 		log.Printf("Server shutdown done, going to close ...")
 		mainCtxCancel()
 	}()
+
+	if *asApp {
+		wv.Run()
+		cancel()
+	}
 
 	<-mainCtx.Done()
 }
